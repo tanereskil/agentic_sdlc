@@ -1,0 +1,1 @@
+CLARIFICATION_NEEDED: Widget'ın hangi JavaScript kütüphanesini kullanmamı istersiniz (örneğin, Chart.js, D3.js vb.)? | Verilerin kaç günde bir güncellenmesini istersiniz (hardcoded olacağı için bu bilgi teknik olarak gerekmese de, gelecekteki güncellemeler için önemli olabilir)? | Widget'ın genel görünümü ve hissiyatı hakkında özel bir isteğiniz var mı (renkler, fontlar vb.)?

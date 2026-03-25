@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <a href="/" class="back-link">← Overview</a>
+        <h1 class="page-title">{{ agent_name }}</h1>
+        <p class="page-sub">{{ agent_key | upper }} Agent</p>
+    </div>
+    <span class="status-badge status-{{ agent.status }}" id="agent-status-badge">{{ agent.status | upper }}</span>
+</div>
+
+<!-- Agent Status Card -->
+<div class="card agent-info-card">
+    <div class="agent-info-grid">
+        <div class="info-block">
+            <div class="info-label">Status</div>
+            <div class="info-value" id="detail-status">{{ agent.status | upper }}</div>
+        </div>
+        <div class="info-block">
+            <div class="info-label">Tasks Handled</div>
+            <div class="info-value">{{ tasks | length }}</div>
+        </div>
+        {% if agent_key == 'pm' %}
+        <div class="info-block">
+            <div class="info-label">Output</div>
+            <div class="info-value">demand.txt</div>
+        </div>
+        {% elif agent_key == 'po' %}
+        <div class="info-block">
+            <div class="info-label">Tasks Created</div>
+            <div class="info-value">{{ tasks | length }}</div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Task List -->
+{% if tasks %}
+<div class="card">
+    <h2 class="card-title">Tasks</h2>
+    <div class="task-list" id="taskList">
+        {% for task in tasks %}
+        <div class="task-item" id="task-{{ task.id }}">
+            <div class="task-header">
+                <div class="task-meta">
+                    <span class="task-id">{{ task.id }}</span>
+                    <span class="task-title-text">{{ task.title }}</span>
+                </div>
+                <div class="task-badges">
+                    <span class="badge priority-{{ task.priority }}">{{ task.priority }}</span>
+                    <span class="badge">{{ task.estimated_complexity }}</span>
+                    <span class="badge assigned-{{ task.assigned_to }}">→ {{ task.assigned_to }}</span>
+                </div>
+            </div>
+            <div class="task-description">{{ task.description }}</div>
+
+            <!-- Comments: PO sees all, others see only their own -->
+            {% if task.comments %}
+            <div class="comments-section">
+                {% for comment in task.comments %}
+                {% if agent_key == 'po' or comment.author == agent_key %}
+                <div class="comment comment-{{ comment.author }}">
+                    <div class="comment-header">
+                        <span class="comment-author">{{ comment.author | upper }}</span>
+                        {% if comment.status %}
+                        <span class="comment-status status-{{ comment.status | lower }}">{{ comment.status }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="comment-content">{{ comment.content }}</div>
+
+                    <!-- Code block lives inside developer comment -->
+                    {% if comment.author == 'developer' and comment.code %}
+                    <div class="code-section" style="margin-top:12px;">
+                        <div class="code-label">Generated Code</div>
+                        <pre class="code-block">{{ comment.code }}</pre>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="card empty-card">
+    <div class="empty-text">
+        {% if state.status == 'running' %}
+            Waiting for tasks to be assigned...
+        {% else %}
+            No tasks assigned to this agent yet.
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+{% if state.status == 'running' %}
+setTimeout(() => location.reload(), 5000);
+{% endif %}
+</script>
+{% endblock %}

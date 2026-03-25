@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futbol Puan Durumu Grafiği</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #eef2f7;
+            margin: 0;
+        }
+        .chart-container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+        .chart-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .chart {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 400px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px 10px 0 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .bar-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+            margin: 0 5px;
+        }
+        .bar {
+            width: 100%;
+            background-color: #007bff;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            transition: height 0.5s ease-in-out;
+            border-radius: 4px 4px 0 0;
+        }
+        .bar-label {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #495057;
+            font-weight: 500;
+        }
+        .bar-score {
+            font-size: 12px;
+            margin-bottom: 5px;
+            opacity: 0.8;
+        }
+        /* Takım renkleri için örnekler - dinamik değil, statik */
+        .bar.galatasaray {
+            background-color: #e00000; /* Galatasaray sarı-kırmızı */
+        }
+        .bar.fenerbahce {
+            background-color: #00008b; /* Fenerbahçe lacivert-sarı */
+        }
+        .bar.besiktas {
+            background-color: #000000; /* Beşiktaş siyah-beyaz */
+        }
+        .bar.trabzonspor {
+            background-color: #4682b4; /* Trabzonspor bordo-mavi */
+        }
+        .bar.basaksehir {
+            background-color: #1e90ff; /* Başakşehir turuncu */
+        }
+        .bar.sivasspor {
+            background-color: #ff8c00; /* Sivasspor kırmızı-beyaz */
+        }
+        .bar.kasimpasa {
+            background-color: #8b0000; /* Kasımpaşa lacivert-kırmızı */
+        }
+        .bar.alanyaspor {
+            background-color: #ffd700; /* Alanyaspor turuncu-yeşil */
+        }
+        .bar.gaziantepfk {
+            background-color: #d3d3d3; /* Gaziantep FK gri-kırmızı */
+        }
+        .bar.karagumruk {
+            background-color: #ff4500; /* Fatih Karagümrük kırmızı-siyah */
+        }
+
+        /* Responsive ayarlar */
+        @media (max-width: 768px) {
+            .chart {
+                height: 300px;
+            }
+            .bar-label {
+                font-size: 12px;
+            }
+            .bar-score {
+                font-size: 10px;
+            }
+            .chart-title {
+                font-size: 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            .chart {
+                height: 250px;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 10px;
+            }
+            .bar-wrapper {
+                width: 45%;
+                margin: 5px;
+            }
+            .chart-title {
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
+            .chart-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <h2 class="chart-title">Türkiye Futbol Süper Lig Puan Durumu</h2>
+        <div class="chart">
+            <div class="bar-wrapper">
+                <div class="bar galatasaray" style="height: 85%;">
+                    <span class="bar-score">85</span>
+                </div>
+                <span class="bar-label">Galatasaray</span>
+            </div>
+            <div class="bar-wrapper">
+                <div class="bar fenerbahce" style="height: 83%;">
+                    <span class="bar-score">83</span>
+                </div>
+                <span class="bar-label">Fenerbahçe</span>
+            </div>
+            <div class="bar-wrapper">
+                <div class="bar besiktas" style="height: 78%;">
+                    <span class="bar-score">78</span>
+                </div>
+                <span class="bar-label">Beşiktaş</span>
+            </div>
+            <div class="bar-wrapper">
+                <div class="bar trabzonspor" style="height: 70%;">
+                    <span class="bar-score">70</span>
+                </div>
+                <span class="bar-label">Trabzonspor</span>
+            </div>
+            <div class="bar-wrapper">
+                <div class="bar basaksehir" style="height: 65%;">
+                    <span class="bar-score">65</span>
+                </div>
+                <span class="bar-label">Başakşehir</span>
+            </div>
+            <div class="bar-wrapper">
+                <div class="bar sivasspor" style="height: 58%;">
+                    <span class="bar-score">58</span>
+                </div>
+                <span class="bar-label">Sivasspor</span>
+            </div>
+            <div class="bar-wrapper">
+                <div class="bar kasimpasa" style="height: 55%;">
+                    <span class="bar-score">55</span>
+                </div>
+                <span class="bar-label">Kasımpaşa</span>
+            </div>
+            <div class="bar-wrapper">
+                <div class="bar alanyaspor" style="height: 52%;">
+                    <span class="bar-score">52</span>
+                </div>
+                <span class="bar-label">Alanyaspor</span>
+            </div>
+            <div class="bar-wrapper">
+                <div class="bar gaziantepfk" style="height: 50%;">
+                    <span class="bar-score">50</span>
+                </div>
+                <span class="bar-label">Gaziantep FK</span>
+            </div>
+            <div class="bar-wrapper">
+                <div class="bar karagumruk" style="height: 48%;">
+                    <span class="bar-score">48</span>
+                </div>
+                <span class="bar-label">Karagümrük</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

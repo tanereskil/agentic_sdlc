@@ -1,0 +1,15 @@
+{
+    "project_type": "STATIC_FRONTEND",
+    "tasks": [
+        {
+            "id": "001",
+            "title": "Tek Sayfal\u0131k Tamamlanm\u0131\u015f HTML Widget'\u0131 Olu\u015fturma",
+            "description": "T\u00fcm mant\u0131k, stil ve verileri sat\u0131r i\u00e7i olarak i\u00e7eren, eksiksiz, kendi kendine yeten, \u00e7al\u0131\u015f\u0131r durumda bir HTML dosyas\u0131 \u00fcretin. Bu dosya, T\u00fcrkiye futbol ligi tak\u0131mlar\u0131n\u0131n g\u00fcncel puan durumunu g\u00f6steren dikey bir barchart i\u00e7erecektir. Chart.js k\u00fct\u00fcphanesi kullan\u0131lacak ve tak\u0131m bilgileri do\u011frudan HTML i\u00e7ine g\u00f6m\u00fclecektir. Grafik, en fazla 10 tak\u0131m\u0131 g\u00f6sterecek ve hem tak\u0131m isimleri hem de puanlar\u0131 g\u00f6r\u00fcn\u00fcr olacakt\u0131r.",
+            "priority": "y\u00fcksek",
+            "estimated_complexity": "orta",
+            "status": "pending",
+            "assigned_to": "analyst",
+            "comments": []
+        }
+    ]
+}

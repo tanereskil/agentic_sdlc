@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>agent_ai — SDLC Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Hamburger Toggle -->
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()">
+        <span></span><span></span><span></span>
+    </button>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">agent_ai</div>
+            <div class="logo-sub">SDLC Pipeline</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-label">Pipeline</div>
+            <a href="/" class="sidebar-item {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                <span class="dot" id="nav-dot-overview"></span>
+                Overview
+            </a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-label">Agents</div>
+            {% set agents = [
+                ('pm', 'Project Manager'),
+                ('po', 'Product Owner'),
+                ('analyst', 'System Analyst'),
+                ('developer', 'Developer'),
+                ('tester', 'Tester')
+            ] %}
+            {% for key, name in agents %}
+            <a href="/agent/{{ key }}" class="sidebar-item {% if request.endpoint == 'agent_page' and agent_key == key %}active{% endif %}" id="nav-{{ key }}">
+                <span class="status-dot status-{{ state.agents[key].status }}" id="dot-{{ key }}"></span>
+                {{ name }}
+                <span class="agent-badge" id="badge-{{ key }}"></span>
+            </a>
+            {% endfor %}
+        </div>
+        <div class="sidebar-footer">
+            <div class="pipeline-status" id="sidebar-status">
+                {{ state.status | upper }}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ══════════════════════════════════════════════════
+         GLOBAL MODALS — visible on every page
+         ══════════════════════════════════════════════════ -->
+
+    <!-- CLARIFICATION MODAL (yellow) -->
+    <div id="clarificationOverlay" class="modal-overlay" style="display:none;">
+        <div class="modal-box modal-clarification">
+            <div class="modal-icon">🟡</div>
+            <div class="modal-type">CLARIFICATION NEEDED</div>
+            <div class="modal-subtitle">The Project Manager needs more information from the customer.</div>
+            <div class="modal-question" id="clarificationQuestion"></div>
+            <textarea class="input-field textarea" id="clarificationAnswer"
+                      placeholder="Type your answer here..."></textarea>
+            <button class="btn-modal btn-modal-yellow" onclick="submitResponse('clarification')">
+                Send Answer &amp; Resume
+            </button>
+        </div>
+    </div>
+
+    <!-- BLOCKED MODAL (red) -->
+    <div id="blockedOverlay" class="modal-overlay" style="display:none;">
+        <div class="modal-box modal-blocked">
+            <div class="modal-icon">🔴</div>
+            <div class="modal-type">TASK BLOCKED</div>
+            <div class="modal-subtitle">The System Analyst cannot proceed. Please provide the missing information.</div>
+            <div class="modal-question" id="blockedQuestion"></div>
+            <textarea class="input-field textarea" id="blockedAnswer"
+                      placeholder="Type your answer here..."></textarea>
+            <button class="btn-modal btn-modal-red" onclick="submitResponse('blocked')">
+                Send Answer &amp; Resume
+            </button>
+        </div>
+    </div>
+
+    <style>
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.75);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        backdrop-filter: blur(4px);
+    }
+    .modal-box {
+        background: var(--bg2);
+        border-radius: 16px;
+        padding: 36px;
+        max-width: 560px;
+        width: 90%;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+    .modal-clarification { border: 2px solid var(--yellow); box-shadow: 0 0 40px rgba(240,165,0,0.2); }
+    .modal-blocked       { border: 2px solid var(--accent3); box-shadow: 0 0 40px rgba(255,107,107,0.2); }
+    .modal-icon   { font-size: 36px; }
+    .modal-type   { font-family: var(--font-display); font-size: 20px; font-weight: 800; letter-spacing: 1px; }
+    .modal-clarification .modal-type { color: var(--yellow); }
+    .modal-blocked       .modal-type { color: var(--accent3); }
+    .modal-subtitle { font-size: 12px; color: var(--text2); }
+    .modal-question {
+        background: var(--bg3);
+        border-radius: 8px;
+        padding: 14px 16px;
+        font-size: 13px;
+        color: var(--text);
+        line-height: 1.6;
+        border-left: 4px solid;
+        white-space: pre-wrap;
+    }
+    .modal-clarification .modal-question { border-color: var(--yellow); }
+    .modal-blocked       .modal-question { border-color: var(--accent3); }
+    .btn-modal {
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-family: var(--font-display);
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        align-self: flex-end;
+    }
+    .btn-modal-yellow { background: var(--yellow); color: #000; }
+    .btn-modal-yellow:hover { background: #ffb822; }
+    .btn-modal-red    { background: var(--accent3); color: #fff; }
+    .btn-modal-red:hover { background: #ff8585; }
+    </style>
+
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+
+    <script>
+    // ── Global SSE — runs on every page ──────────────────────
+    (function() {
+        let sseActive = false;
+
+        function connectSSE() {
+            if (sseActive) return;
+            sseActive = true;
+            const evtSource = new EventSource("/api/stream");
+
+            evtSource.onmessage = (e) => {
+                const data = JSON.parse(e.data);
+                handleGlobalEvent(data);
+                // Also dispatch to page-level handler if exists
+                if (typeof handleEvent === "function") handleEvent(data);
+            };
+
+            evtSource.onerror = () => {
+                sseActive = false;
+                evtSource.close();
+            };
+        }
+
+        function handleGlobalEvent(data) {
+            switch (data.type) {
+                case "agent_status":
+                    // Update sidebar dots from any page
+                    const dot = document.getElementById(`dot-${data.agent}`);
+                    if (dot) dot.className = `status-dot status-${data.status}`;
+                    const sidebarStatus = document.getElementById("sidebar-status");
+                    if (sidebarStatus) sidebarStatus.textContent = "RUNNING";
+                    break;
+
+                case "waiting_input":
+                    showInputModal(data.question, data.input_type);
+                    break;
+
+                case "input_received":
+                    hideModals();
+                    break;
+
+                case "finished":
+                    const sidebarStatusF = document.getElementById("sidebar-status");
+                    if (sidebarStatusF) sidebarStatusF.textContent = "FINISHED";
+                    sseActive = false;
+                    break;
+
+                case "ping":
+                    break;
+            }
+        }
+
+        // ── Modals ──────────────────────────────────────────
+        window.showInputModal = function(question, inputType) {
+            if (inputType === "clarification") {
+                document.getElementById("clarificationQuestion").textContent = question;
+                document.getElementById("clarificationAnswer").value = "";
+                document.getElementById("clarificationOverlay").style.display = "flex";
+            } else {
+                document.getElementById("blockedQuestion").textContent = question;
+                document.getElementById("blockedAnswer").value = "";
+                document.getElementById("blockedOverlay").style.display = "flex";
+            }
+        };
+
+        window.hideModals = function() {
+            document.getElementById("clarificationOverlay").style.display = "none";
+            document.getElementById("blockedOverlay").style.display = "none";
+        };
+
+        window.submitResponse = function(inputType) {
+            const answerId = inputType === "clarification" ? "clarificationAnswer" : "blockedAnswer";
+            const answer = document.getElementById(answerId).value.trim();
+            if (!answer) { alert("Please type an answer before submitting."); return; }
+
+            fetch("/api/respond", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ response: answer })
+            }).then(r => r.json()).then(data => {
+                if (data.error) { alert(data.error); return; }
+                hideModals();
+            });
+        };
+
+        // Auto-connect if pipeline is running or waiting
+        fetch("/api/state").then(r => r.json()).then(state => {
+            if (state.status === "running" || state.status === "waiting_input") {
+                connectSSE();
+            }
+            // If already waiting, show modal immediately
+            if (state.status === "waiting_input" && state.waiting_for_input) {
+                showInputModal(
+                    state.waiting_for_input.question,
+                    state.waiting_for_input.type
+                );
+            }
+        });
+
+        // Expose connectSSE globally so dashboard can call it after starting
+        window.connectSSE = connectSSE;
+    })();
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,31 @@
+## Proje Özeti
+Bu proje, Türkiye'deki futbol takımlarının güncel puan durumunu, takım adlarını ve puanlarını gösteren, çubuk grafik (barchart) formatında tek bir HTML sayfasında sunan bir widget oluşturmayı amaçlamaktadır. Veriler hardcoded (kod içine gömülü) olacaktır ve widget, masaüstü ve mobil cihazlarda görüntülenebilir olacaktır.
+
+## Hedefler
+*   Futbol takımlarının güncel puan durumunu görsel olarak sunmak.
+*   Takım adlarını ve puanlarını net bir şekilde göstermek.
+*   Çubuk grafik (barchart) kullanarak verileri anlaşılır kılmak.
+*   Tek bir HTML dosyası ile kolayca erişilebilir ve çalıştırılabilir bir çözüm sunmak.
+*   Statik bir gösterim ile kullanıcı dostu bir deneyim sağlamak.
+
+## Teknik Gereksinimler
+*   **Programlama Dili:** HTML, CSS, JavaScript (Grafik çizimi için)
+*   **Görselleştirme:** Dikey çubuk grafik (barchart)
+*   **Veri Kaynağı:** Hardcoded (kod içine gömülü)
+*   **Çıktı:** Tek bir .html dosyası
+*   **Cihaz Uyumluluğu:** Masaüstü ve Mobil
+*   **Gösterilecek Takım Sayısı:** En fazla 10 takım
+*   **Etkileşim:** Statik gösterim (interaktif değil)
+
+## Varsayımlar
+*   Verilen puan durumu bilgileri güncel ve doğrudur.
+*   Kullanıcıların HTML dosyasını doğrudan açıp görüntüleyebileceği varsayılmaktadır.
+*   Çubuk grafik için harici bir JavaScript kütüphanesi (örn. Chart.js) kullanılması kabul edilebilir.
+
+## Kısıtlamalar
+*   Veriler hardcoded olacağı için, puan durumundaki değişiklikler manuel olarak HTML dosyasına işlenmelidir.
+*   Tek bir HTML dosyası istendiği için, stil ve betik kodları bu dosya içinde yer alacaktır.
+*   Sadece ilk 10 takım gösterilecektir.
+
+## Benzer Geçmiş Projeler
+Şirketimizin geçmişte çeşitli veri görselleştirme projeleri bulunmaktadır. Özellikle, spor müsabakalarının sonuçlarını ve istatistiklerini gösteren web tabanlı dashboard'lar ve raporlama araçları geliştirilmiştir. Bu projeler, kullanıcıların karmaşık verileri kolayca anlamasını sağlamak amacıyla grafik ve tablo tabanlı arayüzler kullanmıştır. Bu projelerden edinilen deneyim, bu widget'ın geliştirilmesinde de kullanılacaktır.

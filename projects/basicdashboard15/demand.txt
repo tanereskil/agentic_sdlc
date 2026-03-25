@@ -1,0 +1,34 @@
+## Proje Özeti
+Müşteri, Türkiye'deki futbol takımlarının güncel puan durumunu gösteren, dikey çubuk grafik şeklinde statik bir widget içeren tek bir HTML sayfası talep etmektedir. Veriler, müşteri tarafından sağlanan tabloda yer alan takım adları ve puanları ile hardcoded olarak sayfa içine gömülecektir.
+
+## Hedefler
+* Futbol takımlarının puan durumunu görsel olarak sunmak.
+* Takım adlarını ve puanlarını içeren dikey bir çubuk grafik oluşturmak.
+* Widget'ı tek bir tıklanabilir HTML dosyası olarak teslim etmek.
+* Tüm verileri hardcoded olarak HTML sayfasına entegre etmek.
+
+## Teknik Gereksinimler
+Programming Language: HTML, CSS, JavaScript
+
+*   **Frontend Teknolojileri:** HTML, CSS ve JavaScript kullanılacaktır.
+*   **Grafik Kütüphanesi:** Dikey çubuk grafik oluşturmak için bir JavaScript grafik kütüphanesi (örneğin, Chart.js) kullanılacaktır.
+*   **Veri Yapısı:** Takım adları ve puanları JavaScript dizileri veya nesneleri olarak tanımlanacaktır.
+*   **HTML Yapısı:** Widget'ı içerecek temel bir HTML yapısı oluşturulacaktır.
+*   **CSS Stil:** Çubuk grafiklerin ve sayfanın temel stilini belirlemek için CSS kullanılacaktır.
+*   **Statik İçerik:** Tüm veriler ve kod, tek bir HTML dosyası içinde sunulacaktır.
+
+## Varsayımlar
+* Müşteri tarafından sağlanan puan durumu tablosundaki veriler doğrudur ve güncel kabul edilecektir.
+* Widget'ın sadece masaüstü tarayıcılarda düzgün görüntülenmesi yeterlidir.
+* Grafiklerde takım isimlerinin ve puanlarının gösterilmesi yeterlidir, ek detaylara gerek yoktur.
+* Kullanıcıların grafik üzerinde herhangi bir etkileşimde bulunması beklenmemektedir (statik görsel).
+
+## Kısıtlamalar
+* Widget tek bir HTML dosyası olmalıdır.
+* Veriler hardcoded olmalı, harici bir veri kaynağından çekilmemelidir.
+* Grafik türü dikey çubuk grafik olmalıdır.
+* Renkler için özel bir tercih belirtilmemiştir.
+
+## Benzer Geçmiş Projeler
+*   [Proje ID: PG-2023-01] - Çeşitli spor liglerinin puan durumlarını gösteren interaktif dashboard widget'ları. (Bu projede statik ve hardcoded bir çözüm istendiği için farklılık göstermektedir.)
+*   [Proje ID: PG-2022-05] - Ürün stok durumunu gösteren basit dikey çubuk grafik HTML raporları. (Veri kaynağı ve interaktivite açısından benzerlik göstermektedir.)

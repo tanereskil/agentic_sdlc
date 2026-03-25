@@ -1,0 +1,28 @@
+## Proje Özeti
+Müşteri, Türkiye'deki futbol takımlarının güncel puan durumunu gösteren, çubuk grafik (barchart) şeklinde bir widget talep etmektedir. Widget, tek bir HTML sayfası üzerinde çalışacak, veriler hardcoded (kod içine gömülü) olacak ve çıktı olarak tıklanabilir bir HTML dosyası istenmektedir.
+
+## Hedefler
+*   Futbol takımlarının adlarını ve puanlarını görsel olarak sunmak.
+*   Puan durumunu anlaşılır bir çubuk grafik ile temsil etmek.
+*   Tek bir HTML dosyası ile kolayca erişilebilir ve çalıştırılabilir bir çözüm sunmak.
+
+## Teknik Gereksinimler
+*   **Programlama Dili:** HTML, CSS (JavaScript kullanılmayacak, çünkü etkileşim istenmiyor ve grafik standart HTML/CSS ile oluşturulacak)
+*   **Grafik Türü:** Dikey Çubuk Grafik (Barchart)
+*   **Veri Kaynağı:** Hardcoded (kod içine gömülü)
+*   **Platform:** Tek bir HTML sayfası
+*   **Etkileşim:** Üzerine gelindiğinde detay gösterme gibi ek etkileşimler istenmiyor. Widget'ın ekrana sığması yeterlidir.
+*   **Grafik Kütüphanesi:** Standart HTML ve CSS kullanılacaktır.
+
+## Varsayımlar
+*   Müşteri, verilen puan durumu verilerinin widget'ın içine doğrudan yerleştirilmesini kabul etmektedir.
+*   Çubuk grafiklerin tasarımı ve boyutlandırması, tarayıcı penceresine uyum sağlayacak şekilde yapılacaktır.
+*   "Tek tıklama ile çalıştırabilme" ifadesi, HTML dosyasını bir web tarayıcısında açarak widget'ı görüntüleyebilme anlamına gelmektedir.
+
+## Kısıtlar
+*   Veriler dinamik olarak güncellenmeyecektir; kod içine sabitlenmiş olacaktır.
+*   Herhangi bir dış kütüphane veya framework kullanılmayacaktır (standart HTML/CSS ile sınırlı kalınacaktır).
+*   Karmaşık etkileşimler veya animasyonlar eklenmeyecektir.
+
+## Benzer Geçmiş Projeler
+Şu ana kadar bu spesifik formatta bir futbol puan durumu widget'ı oluşturulmamıştır. Ancak, geçmişte benzer veri görselleştirme projeleri (örneğin, satış verilerini gösteren basit çubuk grafikler) için HTML ve CSS kullanılarak statik grafikler oluşturulmuştur. Bu proje, bu mevcut becerileri kullanarak futbol verilerine uyarlanacaktır.

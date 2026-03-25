@@ -1,0 +1,38 @@
+## Proje Özeti
+Müşteri, Türkiye'deki futbol takımlarının güncel puan durumunu gösteren, barchart (çubuk grafik) şeklinde bir widget talep etmektedir. Widget, tek bir HTML sayfası üzerinde çalışacak ve veriler doğrudan HTML dosyasına gömülü (hardcoded) olacaktır. Barchart dikey olacak ve takım isimleri ile puanları gösterecektir.
+
+## Hedefler
+*   Türkiye futbol ligi takımlarının puan durumunu görsel olarak sunmak.
+*   Takım isimlerini ve puanlarını içeren dikey bir barchart oluşturmak.
+*   Kullanıcıların kolayca tıklayıp çalıştırabileceği tek sayfalık bir HTML dosyası sunmak.
+*   Verileri doğrudan HTML içine gömerek ek veri kaynağı ihtiyacını ortadan kaldırmak.
+
+## Teknik Gereksinimler
+Programming Language: HTML, CSS, JavaScript (Chart.js kütüphanesi kullanılacak)
+
+*   **Giriş Verisi:** Müşteri tarafından sağlanan takım bilgileri (takım adı ve puanı) doğrudan HTML içine gömülecektir.
+*   **Görselleştirme:** Dikey barchart kullanılacaktır.
+*   **Teknoloji Yığını:**
+    *   HTML: Widget'ın yapısını oluşturmak için.
+    *   CSS: Widget'ın stilini ve görünümünü düzenlemek için.
+    *   JavaScript: Barchart'ı oluşturmak ve verileri işlemek için. Chart.js kütüphanesi kullanılacaktır.
+*   **Veri Gömme:** Takım isimleri ve puanları JavaScript dizileri içinde hardcoded olarak yer alacaktır.
+*   **Takım Sayısı:** Grafik, en fazla 10 takımı gösterecektir. Eğer liste 10'dan fazlaysa, ilk 10 takım gösterilecektir.
+*   **Görünürlük:** Hem takım isimleri hem de puanları grafik üzerinde/yanında görünür olacaktır.
+
+## Varsayımlar
+*   Müşteri, sağlanan veri formatının (takım adı ve puanı) widget için yeterli olduğunu varsaymaktadır.
+*   Widget'ın çalışması için internet bağlantısına ihtiyaç duyulmayacaktır, çünkü tüm veriler ve kod yerel olarak HTML dosyasında bulunacaktır.
+*   Müşteri, Chart.js gibi popüler bir JavaScript kütüphanesinin kullanımını kabul etmektedir.
+*   "Barchart dikey olsun" ifadesi, çubukların dikey eksende yükseleceği anlamına gelmektedir.
+
+## Kısıtlamalar
+*   Veriler hardcoded olacağından, yeni veri eklemek veya güncellemek için HTML dosyasının manuel olarak düzenlenmesi gerekecektir.
+*   Widget sadece takım adı ve puanını gösterecektir; diğer detaylar (galibiyet, mağlubiyet vb.) grafikte yer almayacaktır.
+*   Grafik, sadece ilk 10 takımı gösterecektir.
+
+## Benzer Geçmiş Projeler
+*   **Proje Kodu:** WIDGET-001
+    *   **Açıklama:** Geçmişte, belirli bir ürünün stok durumunu gösteren dikey bir barchart widget'ı oluşturulmuştur. Veriler yine hardcoded olarak sağlanmış ve tek bir HTML dosyası olarak sunulmuştur. Bu projede de Chart.js kütüphanesi kullanılmıştır.
+*   **Proje Kodu:** DASHBOARD-003
+    *   **Açıklama:** Farklı kategorilerdeki satış rakamlarını gösteren bir dashboard bileşeni geliştirilmiştir. Bu bileşende de dikey barchart kullanılmış ve takım isimleri yerine kategori isimleri gösterilmiştir. Veriler statik olarak dosyaya gömülmüştür.

@@ -1,0 +1,2 @@
+project_name: Smart_Inventory_System
+customer_wish: I want a simple inventory app where I can add, remove products and see the list. Use JSON for storage.

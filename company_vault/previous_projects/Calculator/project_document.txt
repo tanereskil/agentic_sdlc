@@ -1,0 +1,36 @@
+[PROJECT_001: Calculator System]
+Project ID: CALC-2023-001
+Client: Internal Tool
+Status: Completed
+
+Description:
+A command-line calculator application that performs basic arithmetic operations and stores calculation history in a JSON file.
+
+Tech Stack:
+- Language: Python 3.10
+- Storage: JSON (using built-in 'json' library)
+- Interface: CLI (Command Line Interface)
+
+Features:
+- Addition, subtraction, multiplication, division operations
+- Calculation history stored in history.json
+- Input validation (e.g., division by zero handling)
+- View past calculations
+
+Architecture:
+- main.py: Entry point and CLI interface
+- calculator.py: Core arithmetic logic
+- storage.py: JSON read/write operations
+- data/history.json: Persistent storage file
+
+Lessons Learned:
+- Always use the built-in 'json' library for local data storage, avoid third-party libraries for simplicity
+- Separate business logic from storage logic into different modules
+- CLI interface with a simple menu loop works well for internal tools
+- Always validate user input before processing
+- Use try/except blocks for all file operations
+
+Coding Standards Applied:
+- PEP 8 compliant
+- Each function has a docstring
+- Single responsibility principle per module

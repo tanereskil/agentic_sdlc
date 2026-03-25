@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futbol Puan Durumu Widget'ı</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .widget-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 700px;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .widget-header {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .chart-wrapper {
+            width: 100%;
+            position: relative;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        /* Responsive Adjustments for Chart */
+        @media (max-width: 600px) {
+            .widget-header {
+                font-size: 20px;
+            }
+            .widget-container {
+                padding: 15px;
+            }
+            .chart-wrapper {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="widget-container">
+        <div class="widget-header">Süper Lig Puan Durumu</div>
+        <div class="chart-wrapper">
+            <canvas id="puanDurumuChart"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script>
+        const puanDurumuVeri = [
+            { "takim": "Galatasaray", "puan": 90, "galibiyet": 28, "beraberlik": 6, "maglubiyet": 4 },
+            { "takim": "Fenerbahçe", "puan": 89, "galibiyet": 27, "beraberlik": 8, "maglubiyet": 3 },
+            { "takim": "Beşiktaş", "puan": 75, "galibiyet": 22, "beraberlik": 9, "maglubiyet": 7 },
+            { "takim": "Trabzonspor", "puan": 70, "galibiyet": 20, "beraberlik": 10, "maglubiyet": 8 },
+            { "takim": "Başakşehir", "puan": 65, "galibiyet": 18, "beraberlik": 11, "maglubiyet": 9 },
+            { "takim": "Kasımpaşa", "puan": 60, "galibiyet": 17, "beraberlik": 9, "maglubiyet": 12 },
+            { "takim": "Adana Demirspor", "puan": 58, "galibiyet": 16, "beraberlik": 10, "maglubiyet": 12 },
+            { "takim": "Sivasspor", "puan": 55, "galibiyet": 15, "beraberlik": 10, "maglubiyet": 13 },
+            { "takim": "Gaziantep FK", "puan": 50, "galibiyet": 13, "beraberlik": 11, "maglubiyet": 14 },
+            { "takim": "Rizespor", "puan": 48, "galibiyet": 12, "beraberlik": 12, "maglubiyet": 14 }
+        ];
+
+        // Veriyi grafik için uygun formata dönüştürme
+        const takimAdlari = puanDurumuVeri.map(item => item.takim);
+        const takimPuanlari = puanDurumuVeri.map(item => item.puan);
+
+        // Chart.js ile grafik oluşturma
+        const ctx = document.getElementById('puanDurumuChart').getContext('2d');
+        const puanDurumuChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: takimAdlari,
+                datasets: [{
+                    label: 'Puan',
+                    data: takimPuanlari,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(153, 102, 255, 0.7)',
+                        'rgba(255, 159, 64, 0.7)',
+                        'rgba(199, 199, 199, 0.7)',
+                        'rgba(215, 100, 130, 0.7)',
+                        'rgba(100, 215, 130, 0.7)',
+                        'rgba(130, 100, 215, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(199, 199, 199, 1)',
+                        'rgba(215, 100, 130, 1)',
+                        'rgba(100, 215, 130, 1)',
+                        'rgba(130, 100, 215, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Yüksekliği otomatik ayarla
+                plugins: {
+                    legend: {
+                        display: false // Lejantı gizle, çünkü tek veri seti var
+                    },
+                    title: {
+                        display: false // Başlığı gizle, widget başlığı zaten var
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Puan'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Takımlar'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
