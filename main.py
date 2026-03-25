@@ -373,6 +373,7 @@ def run_sdlc_simulation(
             except json.JSONDecodeError:
                 analyst_defense = {"author": "analyst", "content": analyst_defense_raw, "assigned_to": "closed"}
 
+
             analyst_defense["assigned_to"] = "closed"
             task["comments"].append(analyst_defense)
             task["assigned_to"] = "closed"
