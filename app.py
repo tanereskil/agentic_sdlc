@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 # ── Global State ──────────────────────────────────────────────
 app_state = {
-    "status": "idle",           # idle | running | waiting_input | finished | error
+    "status": "idle",
     "project_name": "",
     "tasks": [],
     "agents": {
@@ -21,14 +21,13 @@ app_state = {
         "developer":{"status": "waiting", "tasks_handled": 0, "output": "code"},
         "tester":   {"status": "waiting", "tasks_handled": 0, "output": "test results"},
     },
-    "waiting_for_input": None,   # None | { "question": str, "type": "blocked"|"clarification" }
+    "waiting_for_input": None,
     "user_response": None,
+    "api_key": None,  # Session boyunca hafızada tutulur
 }
 
 event_queue = []
 queue_lock = threading.Lock()
-
-# Threading event to pause pipeline until user responds
 input_event = threading.Event()
 
 
@@ -51,14 +50,13 @@ def push_task_progress(agent: str, index: int, total: int, task_id: str):
 
 
 def ask_user(question: str, input_type: str):
-    """Pause the pipeline and ask user a question via the dashboard."""
     app_state["status"] = "waiting_input"
     app_state["waiting_for_input"] = {"question": question, "type": input_type}
     app_state["user_response"] = None
     input_event.clear()
     push_event({"type": "waiting_input", "question": question, "input_type": input_type})
     push_log(f"⏸ Waiting for user input ({input_type})...")
-    input_event.wait()  # Block until user responds
+    input_event.wait()
     response = app_state["user_response"]
     app_state["waiting_for_input"] = None
     app_state["status"] = "running"
@@ -67,27 +65,26 @@ def ask_user(question: str, input_type: str):
     return response
 
 
-# ── Import pipeline logic ─────────────────────────────────────
-# We import run_sdlc_simulation from main.py but inject our callbacks
 import importlib.util, sys
 
 def run_pipeline_thread(project_name: str, customer_wish: str):
-    """Runs in a background thread. Calls main.py pipeline with Flask callbacks."""
     try:
         app_state["status"] = "running"
         app_state["project_name"] = project_name
-        # Reset agent statuses
         for key in app_state["agents"]:
             app_state["agents"][key]["status"] = "waiting"
             app_state["agents"][key]["tasks_handled"] = 0
 
         push_log(f"Starting pipeline: {project_name}")
 
+        # Session'daki API key varsa environment'a geçici olarak set et
+        if app_state.get("api_key"):
+            os.environ["GEMINI_API_KEY"] = app_state["api_key"]
+
         from main import run_sdlc_simulation
         result = run_sdlc_simulation(
             project_name=project_name,
             initial_request=customer_wish,
-            # Flask callbacks
             on_log=push_log,
             on_agent_status=set_agent_status,
             on_task_progress=push_task_progress,
@@ -108,7 +105,7 @@ def run_pipeline_thread(project_name: str, customer_wish: str):
 
     except Exception as e:
         app_state["status"] = "error"
-        push_log(f" Pipeline error: {str(e)}")
+        push_log(f"Pipeline error: {str(e)}")
         push_event({"type": "error", "message": str(e)})
 
 
@@ -135,8 +132,30 @@ def agent_page(key):
         agent_name=agent_names.get(key, key.upper()),
         agent=app_state["agents"][key],
         tasks=app_state["tasks"],
-        state=app_state      # ← bu satır
+        state=app_state
     )
+
+
+@app.route("/settings")
+def settings():
+    has_key = bool(app_state.get("api_key"))
+    return render_template("settings.html", state=app_state, has_key=has_key)
+
+
+@app.route("/api/settings", methods=["POST"])
+def api_settings():
+    data = request.json
+    api_key = data.get("api_key", "").strip()
+    if not api_key:
+        return jsonify({"error": "API key cannot be empty"}), 400
+    app_state["api_key"] = api_key
+    return jsonify({"ok": True})
+
+
+@app.route("/api/settings/clear", methods=["POST"])
+def api_settings_clear():
+    app_state["api_key"] = None
+    return jsonify({"ok": True})
 
 
 @app.route("/api/state")
@@ -148,13 +167,17 @@ def api_state():
 def api_start():
     if app_state["status"] == "running":
         return jsonify({"error": "Pipeline already running"}), 400
+
+    # API key kontrolü — session'da yoksa .env'den geliyordur
+    if not app_state.get("api_key") and not os.getenv("GEMINI_API_KEY"):
+        return jsonify({"error": "API key not set. Please go to Settings first."}), 400
+
     data = request.json
     project_name = data.get("project_name", "").strip()
     customer_wish = data.get("customer_wish", "").strip()
     if not project_name or not customer_wish:
         return jsonify({"error": "Missing project_name or customer_wish"}), 400
 
-    # Clear event queue
     with queue_lock:
         event_queue.clear()
 
@@ -165,7 +188,6 @@ def api_start():
 
 @app.route("/api/respond", methods=["POST"])
 def api_respond():
-    """User answers a BLOCKED or CLARIFICATION question."""
     if app_state["status"] != "waiting_input":
         return jsonify({"error": "Not waiting for input"}), 400
     data = request.json
@@ -173,13 +195,12 @@ def api_respond():
     if not response:
         return jsonify({"error": "Empty response"}), 400
     app_state["user_response"] = response
-    input_event.set()   # Resume the pipeline thread
+    input_event.set()
     return jsonify({"ok": True})
 
 
 @app.route("/api/stream")
 def api_stream():
-    """SSE endpoint — streams events to the frontend."""
     def generate():
         last_index = 0
         while True:
@@ -204,4 +225,4 @@ def api_stream():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, threaded=True)
+    app.run(debug=False, threaded=True)

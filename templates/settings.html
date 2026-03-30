@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Settings</h1>
+        <p class="page-sub">API key is stored in memory only — clears when server restarts.</p>
+    </div>
+</div>
+
+<div class="card" style="max-width: 560px;">
+    <h2 class="card-title">Gemini API Key</h2>
+
+    {% if has_key %}
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;
+                background:rgba(0,212,170,0.08); border:1px solid var(--accent2);
+                border-radius:8px; padding:14px 16px;">
+        <span style="color:var(--accent2); font-size:18px;">✓</span>
+        <span style="font-size:13px; color:var(--accent2);">API key is set for this session.</span>
+    </div>
+    {% else %}
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;
+                background:rgba(255,107,107,0.08); border:1px solid var(--accent3);
+                border-radius:8px; padding:14px 16px;">
+        <span style="color:var(--accent3); font-size:18px;">!</span>
+        <span style="font-size:13px; color:var(--accent3);">No API key set. Pipeline will not run.</span>
+    </div>
+    {% endif %}
+
+    <div class="form-group">
+        <label>GEMINI API KEY</label>
+        <input class="input-field" type="password" id="apiKeyInput"
+               placeholder="Enter your Gemini API key...">
+    </div>
+
+    <div style="display:flex; gap:12px; margin-top:8px;">
+        <button class="btn-start" onclick="saveKey()">Save Key</button>
+        {% if has_key %}
+        <button onclick="clearKey()"
+                style="background:transparent; border:1px solid var(--accent3);
+                       color:var(--accent3); border-radius:8px; padding:12px 20px;
+                       font-family:var(--font-display); font-size:14px;
+                       font-weight:700; cursor:pointer;">
+            Clear Key
+        </button>
+        {% endif %}
+    </div>
+
+    <p style="margin-top:20px; font-size:11px; color:var(--text3); line-height:1.6;">
+        Your API key is stored only in server memory and is never written to disk.
+        It will be cleared when the server restarts. Get your key from
+        <a href="https://aistudio.google.com/app/apikey"
+           style="color:var(--accent);">Google AI Studio</a>.
+    </p>
+</div>
+
+<script>
+function saveKey() {
+    const key = document.getElementById("apiKeyInput").value.trim();
+    if (!key) { alert("Please enter an API key."); return; }
+
+    fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ api_key: key })
+    }).then(r => r.json()).then(data => {
+        if (data.error) { alert(data.error); return; }
+        window.location.reload();
+    });
+}
+
+function clearKey() {
+    fetch("/api/settings/clear", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+    }).then(() => window.location.reload());
+}
+</script>
+{% endblock %}
