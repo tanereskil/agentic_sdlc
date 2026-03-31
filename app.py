@@ -2,7 +2,9 @@ import threading
 import json
 import time
 import os
-from flask import Flask, render_template, jsonify, request, Response, stream_with_context
+import io
+import zipfile
+from flask import Flask, render_template, jsonify, request, Response, stream_with_context, send_file
 from core.io_manager import IOManager
 from config import MODEL_NAME, BASE_PROJECT_PATH, COMPANY_VAULT_PATH
 
@@ -163,6 +165,33 @@ def api_respond():
     app_state["user_response"] = response
     input_event.set()
     return jsonify({"ok": True})
+
+
+@app.route("/api/download/<project_name>")
+def api_download(project_name):
+    """Zip all generated code files and send to browser."""
+    codes_path = os.path.join(BASE_PROJECT_PATH, project_name, "codes")
+
+    if not os.path.exists(codes_path):
+        return jsonify({"error": "No codes found for this project"}), 404
+
+    files = os.listdir(codes_path)
+    if not files:
+        return jsonify({"error": "No code files found"}), 404
+
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zf:
+        for filename in files:
+            filepath = os.path.join(codes_path, filename)
+            zf.write(filepath, filename)
+    zip_buffer.seek(0)
+
+    return send_file(
+        zip_buffer,
+        mimetype='application/zip',
+        as_attachment=True,
+        download_name=f"{project_name}_codes.zip"
+    )
 
 
 @app.route("/api/stream")
