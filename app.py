@@ -3,7 +3,6 @@ import json
 import time
 import os
 from flask import Flask, render_template, jsonify, request, Response, stream_with_context
-from core.agent import AIAgent
 from core.io_manager import IOManager
 from config import MODEL_NAME, BASE_PROJECT_PATH, COMPANY_VAULT_PATH
 
@@ -23,7 +22,6 @@ app_state = {
     },
     "waiting_for_input": None,
     "user_response": None,
-    "api_key": None,  # Session boyunca hafızada tutulur
 }
 
 event_queue = []
@@ -65,8 +63,6 @@ def ask_user(question: str, input_type: str):
     return response
 
 
-import importlib.util, sys
-
 def run_pipeline_thread(project_name: str, customer_wish: str):
     try:
         app_state["status"] = "running"
@@ -76,10 +72,6 @@ def run_pipeline_thread(project_name: str, customer_wish: str):
             app_state["agents"][key]["tasks_handled"] = 0
 
         push_log(f"Starting pipeline: {project_name}")
-
-        # Session'daki API key varsa environment'a geçici olarak set et
-        if app_state.get("api_key"):
-            os.environ["GEMINI_API_KEY"] = app_state["api_key"]
 
         from main import run_sdlc_simulation
         result = run_sdlc_simulation(
@@ -136,28 +128,6 @@ def agent_page(key):
     )
 
 
-@app.route("/settings")
-def settings():
-    has_key = bool(app_state.get("api_key"))
-    return render_template("settings.html", state=app_state, has_key=has_key)
-
-
-@app.route("/api/settings", methods=["POST"])
-def api_settings():
-    data = request.json
-    api_key = data.get("api_key", "").strip()
-    if not api_key:
-        return jsonify({"error": "API key cannot be empty"}), 400
-    app_state["api_key"] = api_key
-    return jsonify({"ok": True})
-
-
-@app.route("/api/settings/clear", methods=["POST"])
-def api_settings_clear():
-    app_state["api_key"] = None
-    return jsonify({"ok": True})
-
-
 @app.route("/api/state")
 def api_state():
     return jsonify(app_state)
@@ -167,10 +137,6 @@ def api_state():
 def api_start():
     if app_state["status"] == "running":
         return jsonify({"error": "Pipeline already running"}), 400
-
-    # API key kontrolü — session'da yoksa .env'den geliyordur
-    if not app_state.get("api_key") and not os.getenv("GEMINI_API_KEY"):
-        return jsonify({"error": "API key not set. Please go to Settings first."}), 400
 
     data = request.json
     project_name = data.get("project_name", "").strip()

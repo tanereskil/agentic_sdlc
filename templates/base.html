@@ -47,17 +47,6 @@
             {% endfor %}
         </div>
 
-        <div class="sidebar-section">
-            <div class="sidebar-label">System</div>
-            <a href="/settings" class="sidebar-item {% if request.endpoint == 'settings' %}active{% endif %}">
-                <span class="status-dot {% if state.api_key %}status-done{% else %}status-error{% endif %}"></span>
-                Settings
-                {% if not state.api_key %}
-                <span class="agent-badge" style="color:var(--accent3);">no key</span>
-                {% endif %}
-            </a>
-        </div>
-
         <div class="sidebar-footer">
             <div class="pipeline-status" id="sidebar-status">
                 {{ state.status | upper }}
@@ -158,7 +147,6 @@
     .btn-modal-yellow:hover { background: #ffb822; }
     .btn-modal-red    { background: var(--accent3); color: #fff; }
     .btn-modal-red:hover { background: #ff8585; }
-    .status-error { background: var(--accent3); }
     </style>
 
     <script src="{{ url_for('static', filename='main.js') }}"></script>
